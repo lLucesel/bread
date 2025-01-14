@@ -70,6 +70,8 @@
         <div class="controls">
             <label for="excluded">제외할 숫자 (쉼표로 구분):</label>
             <input type="text" id="excluded" placeholder="예: 55, 41">
+            <label for="included">반드시 포함할 숫자 (쉼표로 구분):</label>
+            <input type="text" id="included" placeholder="예: 49, 45">
             <button onclick="findCombinations()">조합 찾기</button>
         </div>
         <div class="results">
@@ -97,14 +99,19 @@
                 ? excludedInput.split(",").map(num => parseInt(num.trim(), 10))
                 : [];
             
-            const filteredNumbers = numbers.filter(num => !excluded.includes(num));
+            const includedInput = document.getElementById("included").value;
+            const included = includedInput
+                ? includedInput.split(",").map(num => parseInt(num.trim(), 10))
+                : [];
+
+            const filteredNumbers = numbers.filter(num => !excluded.includes(num) && !included.includes(num));
             const minSum = 130;
             const maxSum = 136;
 
             Promise.all(
                 [3, 4, 5].map(size => 
                     new Promise(resolve => {
-                        const combos = getCombinations(filteredNumbers, size);
+                        const combos = getCombinations(filteredNumbers, size, included);
                         const validCombos = combos.filter(combo => {
                             const sum = combo.reduce((a, b) => a + b, 0);
                             return sum >= minSum && sum <= maxSum;
@@ -119,11 +126,13 @@
             });
         }
 
-        function getCombinations(array, size) {
+        function getCombinations(array, size, included) {
             const results = [];
             function helper(start, combo, currentSum) {
                 if (combo.length === size) {
-                    results.push([...combo]);
+                    if (included.every(num => combo.includes(num))) {
+                        results.push([...combo]);
+                    }
                     return;
                 }
                 for (let i = start; i < array.length; i++) {
@@ -139,7 +148,7 @@
         function displayResults(size, results) {
             const resultsDiv = document.getElementById(`results-${size}`);
             const ul = resultsDiv.querySelector("ul");
-            ul.innerHTML = results.map(result => `<li>${result.join(", ")}</li>`).join("");
+            ul.innerHTML = results.map((result, index) => `<li>${index + 1}. ${result.join(", ")}</li>`).join("");
         }
     </script>
 </body>
