@@ -30,7 +30,7 @@
         }
         .controls {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             gap: 20px;
             margin-bottom: 20px;
         }
@@ -45,6 +45,9 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+        }
+        .control-space {
+            width: 20px; /* 빈 공간 추가 */
         }
         .button-wrapper {
             display: flex;
@@ -106,6 +109,7 @@
                 <label for="excluded">제외할 숫자 (쉼표로 구분):</label>
                 <input type="text" id="excluded" placeholder="예: 55, 41">
             </div>
+            <div class="control-space"></div> <!-- 빈 공간 추가 -->
             <div class="control-item">
                 <label for="included">반드시 포함할 숫자 (쉼표로 구분):</label>
                 <input type="text" id="included" placeholder="예: 49, 45">
