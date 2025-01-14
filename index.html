@@ -114,17 +114,17 @@
         </div>
 
         <div class="controls">
-            <div class="control-item">
-                <label for="excluded">제외할 숫자 (쉼표로 구분):</label>
-                <input type="text" id="excluded" placeholder="예: 55, 41">
-            </div>
-            <div class="control-item" style="width: 4%;">
-            </div>
-            <div class="control-item">
-                <label for="included">반드시 포함할 숫자 (쉼표로 구분):</label>
-                <input type="text" id="included" placeholder="예: 49, 45">
-            </div>
-        </div>
+    <div class="control-item" style="flex: 1;">
+        <label for="excluded">제외할 숫자 (쉼표로 구분):</label>
+        <input type="text" id="excluded" placeholder="예: 55, 41">
+    </div>
+    <div class="control-item" style="flex: 0 0 4%;"> <!-- 여백을 위해 고정된 flex 값 사용 -->
+    </div>
+    <div class="control-item" style="flex: 1;">
+        <label for="included">반드시 포함할 숫자 (쉼표로 구분):</label>
+        <input type="text" id="included" placeholder="예: 49, 45">
+    </div>
+</div>
 
         <div class="control-item">
             <button onclick="findCombinations()">조합 찾기</button>
