@@ -17,14 +17,20 @@
             padding: 20px;
         }
         .controls {
+            display: flex;
+            justify-content: space-between;
             width: 100%;
             max-width: 800px;
             margin-bottom: 20px;
         }
+        .control-item {
+            flex: 1;
+            margin: 0 10px;
+        }
         input {
-            width: calc(100% - 120px);
+            width: 100%;
             padding: 10px;
-            margin-right: 10px;
+            margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
@@ -68,23 +74,34 @@
 <body>
     <div class="container">
         <div class="controls">
-            <label for="excluded">제외할 숫자 (쉼표로 구분):</label>
-            <input type="text" id="excluded" placeholder="예: 55, 41">
-            <label for="included">반드시 포함할 숫자 (쉼표로 구분):</label>
-            <input type="text" id="included" placeholder="예: 49, 45">
-            <button onclick="findCombinations()">조합 찾기</button>
+            <div class="control-item">
+                <label for="excluded">제외할 숫자 (쉼표로 구분):</label>
+                <input type="text" id="excluded" placeholder="예: 55, 41">
+            </div>
+            <div class="control-item">
+                <label for="included">반드시 포함할 숫자 (쉼표로 구분):</label>
+                <input type="text" id="included" placeholder="예: 49, 45">
+            </div>
+            <div class="control-item" style="flex: 0 0 120px;">
+                <button onclick="findCombinations()">조합 찾기</button>
+            </div>
         </div>
+
+        <div>
+            <h2>결과</h2>
+        </div>
+        
         <div class="results">
             <div id="results-3">
-                <h2>조합 크기: 3</h2>
+                <h3>조합 크기: 3</h3>
                 <ul></ul>
             </div>
             <div id="results-4">
-                <h2>조합 크기: 4</h2>
+                <h3>조합 크기: 4</h3>
                 <ul></ul>
             </div>
             <div id="results-5">
-                <h2>조합 크기: 5</h2>
+                <h3>조합 크기: 5</h3>
                 <ul></ul>
             </div>
         </div>
@@ -148,7 +165,7 @@
         function displayResults(size, results) {
             const resultsDiv = document.getElementById(`results-${size}`);
             const ul = resultsDiv.querySelector("ul");
-            ul.innerHTML = results.map((result, index) => `<li>${index + 1}. ${result.join(", ")}</li>`).join("");
+            ul.innerHTML = results.map(result => `<li>${result.join(", ")}</li>`).join("");
         }
     </script>
 </body>
