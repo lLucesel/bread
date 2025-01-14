@@ -145,7 +145,7 @@
 
         function getCombinations(array, size, included) {
             const results = [];
-            function helper(start, combo, currentSum) {
+            function helper(start, combo) {
                 if (combo.length === size) {
                     if (included.every(num => combo.includes(num))) {
                         results.push([...combo]);
@@ -165,7 +165,11 @@
         function displayResults(size, results) {
             const resultsDiv = document.getElementById(`results-${size}`);
             const ul = resultsDiv.querySelector("ul");
-            ul.innerHTML = results.map(result => `<li>${result.join(", ")}</li>`).join("");
+
+            // 최대 100개까지 표시하도록 제한
+            const limitedResults = results.slice(0, 100);
+
+            ul.innerHTML = limitedResults.map(result => `<li>${result.join(", ")}</li>`).join("");
         }
     </script>
 </body>
