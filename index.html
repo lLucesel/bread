@@ -42,12 +42,13 @@
             border-radius: 5px;
         }
         button {
-            padding: 10px 20px;
+            padding: 20px;
             background-color: #007BFF;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 100%;
         }
         button:hover {
             background-color: #0056b3;
@@ -76,6 +77,10 @@
             font-size: 1.1em;
             margin-bottom: 10px;
         }
+        .result-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
         ul {
             list-style: none;
             padding: 0;
@@ -97,26 +102,23 @@
                 <label for="included">반드시 포함할 숫자 (쉼표로 구분):</label>
                 <input type="text" id="included" placeholder="예: 49, 45">
             </div>
-            <div class="control-item" style="flex: 0 0 120px;">
-                <button onclick="findCombinations()">조합 찾기</button>
-            </div>
         </div>
 
-        <div>
-            <h2>결과</h2>
+        <div class="control-item">
+            <button onclick="findCombinations()">조합 찾기</button>
         </div>
-        
+
         <div class="results">
             <div id="results-3" class="result-column">
-                <h3>조합 크기: 3</h3>
+                <div class="result-header">조합 크기: 3</div>
                 <ul></ul>
             </div>
             <div id="results-4" class="result-column">
-                <h3>조합 크기: 4</h3>
+                <div class="result-header">조합 크기: 4</div>
                 <ul></ul>
             </div>
             <div id="results-5" class="result-column">
-                <h3>조합 크기: 5</h3>
+                <div class="result-header">조합 크기: 5</div>
                 <ul></ul>
             </div>
         </div>
