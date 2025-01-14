@@ -3,24 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>숫자 조합 찾기</title>
+    <title>숫자 조합 결과</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
         }
         .container {
-            max-width: 600px;
-            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .controls {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
         }
         input {
-            width: 100%;
+            width: calc(100% - 120px);
             padding: 10px;
-            margin: 10px 0;
+            margin-right: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
@@ -36,24 +40,52 @@
             background-color: #0056b3;
         }
         .results {
-            margin-top: 20px;
+            display: flex;
+            width: 100%;
         }
-        .results ul {
+        .results > div {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 5px;
+            border-radius: 5px;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+        h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        ul {
             list-style: none;
             padding: 0;
         }
-        .results li {
+        li {
             margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>숫자 조합 찾기</h1>
-        <label for="excluded">제외할 숫자 (쉼표로 구분, 선택 사항):</label>
-        <input type="text" id="excluded" placeholder="예: 55, 41">
-        <button onclick="findCombinations()">조합 찾기</button>
-        <div class="results" id="results"></div>
+        <div class="controls">
+            <label for="excluded">제외할 숫자 (쉼표로 구분):</label>
+            <input type="text" id="excluded" placeholder="예: 55, 41">
+            <button onclick="findCombinations()">조합 찾기</button>
+        </div>
+        <div class="results">
+            <div id="results-3">
+                <h2>조합 크기: 3</h2>
+                <ul></ul>
+            </div>
+            <div id="results-4">
+                <h2>조합 크기: 4</h2>
+                <ul></ul>
+            </div>
+            <div id="results-5">
+                <h2>조합 크기: 5</h2>
+                <ul></ul>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -65,26 +97,31 @@
                 ? excludedInput.split(",").map(num => parseInt(num.trim(), 10))
                 : [];
             
+            const filteredNumbers = numbers.filter(num => !excluded.includes(num));
             const minSum = 130;
             const maxSum = 136;
-            const results = [];
-            
-            [3, 4, 5].forEach(size => {
-                const combos = getCombinations(numbers.filter(num => !excluded.includes(num)), size);
-                combos.forEach(combo => {
-                    const sum = combo.reduce((a, b) => a + b, 0);
-                    if (sum >= minSum && sum <= maxSum) {
-                        results.push({ combo, sum });
-                    }
+
+            Promise.all(
+                [3, 4, 5].map(size => 
+                    new Promise(resolve => {
+                        const combos = getCombinations(filteredNumbers, size);
+                        const validCombos = combos.filter(combo => {
+                            const sum = combo.reduce((a, b) => a + b, 0);
+                            return sum >= minSum && sum <= maxSum;
+                        });
+                        resolve({ size, validCombos });
+                    })
+                )
+            ).then(allResults => {
+                allResults.forEach(({ size, validCombos }) => {
+                    displayResults(size, validCombos);
                 });
             });
-
-            displayResults(results);
         }
 
         function getCombinations(array, size) {
             const results = [];
-            function helper(start, combo) {
+            function helper(start, combo, currentSum) {
                 if (combo.length === size) {
                     results.push([...combo]);
                     return;
@@ -99,15 +136,11 @@
             return results;
         }
 
-        function displayResults(results) {
-            const resultsDiv = document.getElementById("results");
-            resultsDiv.innerHTML = `<h2>결과 (${results.length}개의 조합):</h2><ul>`;
-            results.forEach(result => {
-                resultsDiv.innerHTML += `<li>${result.combo.join(", ")} (합계: ${result.sum})</li>`;
-            });
-            resultsDiv.innerHTML += `</ul>`;
+        function displayResults(size, results) {
+            const resultsDiv = document.getElementById(`results-${size}`);
+            const ul = resultsDiv.querySelector("ul");
+            ul.innerHTML = results.map(result => `<li>${result.join(", ")}</li>`).join("");
         }
     </script>
 </body>
 </html>
-
