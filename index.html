@@ -156,6 +156,7 @@
 
         function getCombinations(array, size, included) {
             const results = [];
+            const numbersToConsider = included.length > 0 ? [...included] : [...array];
 
             function backtrack(start, combo) {
                 if (combo.length === size) {
@@ -164,14 +165,14 @@
                     }
                     return;
                 }
-                for (let i = start; i < array.length; i++) {
-                    combo.push(array[i]);
+                for (let i = start; i < numbersToConsider.length; i++) {
+                    combo.push(numbersToConsider[i]);
                     backtrack(i + 1, combo);
                     combo.pop();
                 }
             }
 
-            backtrack(0, [...included]);
+            backtrack(0, []);
             return results;
         }
 
