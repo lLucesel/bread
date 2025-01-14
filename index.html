@@ -146,33 +146,27 @@
         function getCombinations(array, size, included) {
             const results = [];
 
-            // 포함할 숫자가 있다면, 먼저 해당 숫자들을 조합에 포함시킴
-            if (included.length > 0) {
-                array = array.filter(num => !included.includes(num)); // 포함할 숫자들은 제외
-            }
-
+            // 포함할 숫자들이 있다면 반드시 포함되도록
+            const remainingArray = array.filter(num => !included.includes(num));
+            
             function helper(start, combo) {
                 if (combo.length === size) {
-                    // 포함할 숫자가 모두 조합에 포함되었는지 확인
+                    // 포함할 숫자가 모두 포함된 경우에만 추가
                     if (included.every(num => combo.includes(num))) {
                         results.push([...combo]);
                     }
                     return;
                 }
-                for (let i = start; i < array.length; i++) {
-                    combo.push(array[i]);
+                for (let i = start; i < remainingArray.length; i++) {
+                    combo.push(remainingArray[i]);
                     helper(i + 1, combo);
                     combo.pop();
                 }
             }
 
-            // 포함할 숫자를 이미 포함한 상태에서 나머지 숫자들로 조합 생성
+            // 포함할 숫자가 없다면 그냥 조합 생성
             if (included.length > 0) {
-                included.forEach(num => {
-                    const tempArray = [...array];
-                    const tempIncluded = [num];
-                    helper(0, tempIncluded);
-                });
+                helper(0, [...included]); // 포함할 숫자들을 먼저 넣고 나머지 조합 생성
             } else {
                 helper(0, []);
             }
