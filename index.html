@@ -19,7 +19,7 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            max-width: 80%;
+            max-width: 800px;
             padding: 20px;
             background-color: white;
             border-radius: 10px;
@@ -38,14 +38,13 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* 텍스트를 왼쪽 정렬로 변경 */
+            align-items: center;
         }
         .control-item input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            margin-bottom: 10px; /* 아래쪽 여백 추가 */
         }
         .control-space {
             width: 20px; /* 빈 공간 추가 */
@@ -96,11 +95,6 @@
         li {
             margin-bottom: 5px;
         }
-        .combination-header {
-            font-weight: bold;
-            margin-bottom: 10px;
-            margin-left: 10px; /* 왼쪽 여백 추가 */
-        }
     </style>
 </head>
 <body>
@@ -128,15 +122,15 @@
 
         <div class="results">
             <div class="result-column">
-                <div class="combination-header">조합 크기: 3</div>
+                <div class="result-header">조합 크기: 3</div>
                 <ul id="results-3"></ul>
             </div>
             <div class="result-column">
-                <div class="combination-header">조합 크기: 4</div>
+                <div class="result-header">조합 크기: 4</div>
                 <ul id="results-4"></ul>
             </div>
             <div class="result-column">
-                <div class="combination-header">조합 크기: 5</div>
+                <div class="result-header">조합 크기: 5</div>
                 <ul id="results-5"></ul>
             </div>
         </div>
