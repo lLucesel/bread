@@ -38,9 +38,13 @@
             flex: 1;
             margin: 0 10px;
         }
+        /* 수정된 부분: 각 입력칸을 48%로 설정하고, 사이에 여백을 추가 */
         .controls .control-item:nth-child(1),
         .controls .control-item:nth-child(3) {
-            width: 48%; /* 50% 너비에 가까운 크기로 수정 */
+            width: 48%; /* 50%에 가까운 크기로 설정 */
+        }
+        .controls .control-item:nth-child(2) {
+            width: 4%; /* 여백으로 두기 위해 비워두기 */
         }
         input {
             width: 100%;
