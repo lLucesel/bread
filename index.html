@@ -146,8 +146,10 @@
             const excluded = excludedInput ? excludedInput.split(",").map(num => parseInt(num.trim())) : [];
             const included = includedInput ? includedInput.split(",").map(num => parseInt(num.trim())) : [];
 
+            // 제외할 숫자들을 필터링
             const filteredNumbers = numbers.filter(num => !excluded.includes(num));
 
+            // 크기 3, 4, 5 조합 찾기
             [3, 4, 5].forEach(size => {
                 const combinations = getCombinations(filteredNumbers, size, included);
                 displayResults(size, combinations);
@@ -159,11 +161,13 @@
 
             function backtrack(start, combo) {
                 if (combo.length === size) {
+                    // 반드시 포함할 숫자들이 모두 포함된 경우에만 결과에 추가
                     if (included.every(num => combo.includes(num))) {
                         results.push([...combo]);
                     }
                     return;
                 }
+                // 시작 숫자부터 차례대로 조합을 만들기
                 for (let i = start; i < array.length; i++) {
                     combo.push(array[i]);
                     backtrack(i + 1, combo);
@@ -171,7 +175,9 @@
                 }
             }
 
+            // 반드시 포함할 숫자들을 시작 부분에 넣고, 나머지 숫자들을 추가
             backtrack(0, [...included]);
+
             return results;
         }
 
