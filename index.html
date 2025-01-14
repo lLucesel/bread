@@ -158,12 +158,18 @@
 
         function getCombinations(array, size, included) {
             const results = [];
+            const minSum = 130;  // 최소 합
+            const maxSum = 136;  // 최대 합
 
             function backtrack(start, combo) {
                 if (combo.length === size) {
                     // 반드시 포함할 숫자들이 모두 포함된 경우에만 결과에 추가
                     if (included.every(num => combo.includes(num))) {
-                        results.push([...combo]);
+                        const sum = combo.reduce((acc, num) => acc + num, 0);
+                        // 합이 범위 내에 있는지 확인
+                        if (sum >= minSum && sum <= maxSum) {
+                            results.push([...combo]);
+                        }
                     }
                     return;
                 }
