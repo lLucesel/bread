@@ -31,7 +31,7 @@
         .controls {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 10px; /* 여백을 반으로 줄였음 */
         }
         .control-item {
             flex: 1;
@@ -90,6 +90,19 @@
         }
         li {
             margin-bottom: 5px;
+        }
+        /* 수정된 부분: 제외 및 포함 숫자 입력칸의 크기 맞추기 */
+        .controls .control-item:nth-child(1),
+        .controls .control-item:nth-child(3) {
+            flex: 1;
+        }
+        .controls .control-item:nth-child(2) {
+            flex: 0 0 20px;
+        }
+        /* 수정된 부분: 결과창 크기 조정 */
+        .results .result-column {
+            flex: 1;
+            max-width: 33%; /* 전체 박스의 3분의 1로 설정 */
         }
     </style>
 </head>
@@ -200,7 +213,7 @@
             if (included.length > 0) {
                 helper(0, [...included]); // 포함할 숫자들을 먼저 넣고 나머지 조합 생성
             } else {
-                helper(0, []);
+                helper(0, []); 
             }
 
             return results;
