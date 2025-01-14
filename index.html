@@ -32,7 +32,7 @@
         .controls {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px; /* 여백을 반으로 줄였음 */
+            margin-bottom: 10px;
         }
         .control-item {
             flex: 1;
@@ -72,7 +72,8 @@
             width: 100%; /* 결과창의 부모 컨테이너가 가득 차도록 설정 */
         }
         .result-column {
-            flex: 1; /* 동일한 비율로 분배 */
+            flex-grow: 1;
+            min-width: 30%; /* 최소 너비를 30%로 설정 */
             padding: 10px;
             border: 1px solid #ccc;
             margin: 0 5px;
