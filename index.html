@@ -185,46 +185,4 @@
             });
         }
 
-        function getCombinations(array, size, included) {
-            const results = [];
-
-            // 포함할 숫자들이 있다면 반드시 포함되도록
-            const remainingArray = array.filter(num => !included.includes(num));
-            
-            function helper(start, combo) {
-                if (combo.length === size) {
-                    // 포함할 숫자가 모두 포함된 경우에만 추가
-                    if (included.every(num => combo.includes(num))) {
-                        results.push([...combo]);
-                    }
-                    return;
-                }
-                for (let i = start; i < remainingArray.length; i++) {
-                    combo.push(remainingArray[i]);
-                    helper(i + 1, combo);
-                    combo.pop();
-                }
-            }
-
-            // 포함할 숫자가 없다면 그냥 조합 생성
-            if (included.length > 0) {
-                helper(0, [...included]); // 포함할 숫자들을 먼저 넣고 나머지 조합 생성
-            } else {
-                helper(0, []); 
-            }
-
-            return results;
-        }
-
-        function displayResults(size, results) {
-            const resultsDiv = document.getElementById(`results-${size}`);
-            const ul = resultsDiv.querySelector("ul");
-
-            // 최대 100개까지 표시하도록 제한
-            const limitedResults = results.slice(0, 100);
-
-            ul.innerHTML = limitedResults.map(result => `<li>${result.join(", ")}</li>`).join("");
-        }
-    </script>
-</body>
-</html>
+        functio
