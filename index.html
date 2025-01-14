@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Number Combinations</title>
+    <title>숫자 조합 찾기</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,10 +49,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>Number Combinations</h1>
-        <label for="excluded">Exclude Number (optional, comma-separated):</label>
-        <input type="text" id="excluded" placeholder="e.g., 55, 41">
-        <button onclick="findCombinations()">Find Combinations</button>
+        <h1>숫자 조합 찾기</h1>
+        <label for="excluded">제외할 숫자 (쉼표로 구분, 선택 사항):</label>
+        <input type="text" id="excluded" placeholder="예: 55, 41">
+        <button onclick="findCombinations()">조합 찾기</button>
         <div class="results" id="results"></div>
     </div>
 
@@ -101,12 +101,13 @@
 
         function displayResults(results) {
             const resultsDiv = document.getElementById("results");
-            resultsDiv.innerHTML = `<h2>Results (${results.length} combinations):</h2><ul>`;
+            resultsDiv.innerHTML = `<h2>결과 (${results.length}개의 조합):</h2><ul>`;
             results.forEach(result => {
-                resultsDiv.innerHTML += `<li>${result.combo.join(", ")} (Sum: ${result.sum})</li>`;
+                resultsDiv.innerHTML += `<li>${result.combo.join(", ")} (합계: ${result.sum})</li>`;
             });
             resultsDiv.innerHTML += `</ul>`;
         }
     </script>
 </body>
 </html>
+
