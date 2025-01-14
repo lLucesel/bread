@@ -19,7 +19,7 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            max-width: 900px; /* container의 크기를 늘려서 입력창 너비 맞춤 */
+            max-width: 80%; /* 화면의 80%로 컨테이너의 너비를 설정 */
             padding: 20px;
             background-color: white;
             border-radius: 10px;
@@ -35,8 +35,12 @@
             margin-bottom: 10px; /* 여백을 반으로 줄였음 */
         }
         .control-item {
-            flex: 0 0 48%; /* 정확하게 50% 너비로 수정 */
+            flex: 1;
             margin: 0 10px;
+        }
+        .controls .control-item:nth-child(1),
+        .controls .control-item:nth-child(3) {
+            width: 48%; /* 50% 너비에 가까운 크기로 수정 */
         }
         input {
             width: 100%;
@@ -92,14 +96,6 @@
         li {
             margin-bottom: 5px;
         }
-        /* 수정된 부분: 제외 및 포함 숫자 입력칸의 크기 맞추기 */
-        .controls .control-item:nth-child(1),
-        .controls .control-item:nth-child(3) {
-            flex: 0 0 48%; /* 50% 너비로 정확히 설정 */
-        }
-        .controls .control-item:nth-child(2) {
-            flex: 0 0 20px;
-        }
         /* 수정된 부분: 결과창 크기 조정 */
         .results .result-column {
             flex: 1;
@@ -120,7 +116,6 @@
                 <label for="excluded">제외할 숫자 (쉼표로 구분):</label>
                 <input type="text" id="excluded" placeholder="예: 55, 41">
             </div>
-            <div class="control-item" style="flex: 0 0 20px;"></div> <!-- 여백을 추가한 공간 -->
             <div class="control-item">
                 <label for="included">반드시 포함할 숫자 (쉼표로 구분):</label>
                 <input type="text" id="included" placeholder="예: 49, 45">
