@@ -69,9 +69,10 @@
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
+            width: 100%; /* 결과창의 부모 컨테이너가 가득 차도록 설정 */
         }
         .result-column {
-            flex: 1;
+            flex: 1; /* 동일한 비율로 분배 */
             padding: 10px;
             border: 1px solid #ccc;
             margin: 0 5px;
@@ -79,6 +80,7 @@
             height: 300px;
             overflow-y: auto;
             background-color: #fafafa;
+            max-width: 33%; /* 각 결과창이 전체의 3분의 1을 차지하도록 설정 */
         }
         h2 {
             font-size: 1.2em;
@@ -99,11 +101,6 @@
         }
         li {
             margin-bottom: 5px;
-        }
-        /* 수정된 부분: 결과창 크기 조정 */
-        .results .result-column {
-            flex: 1;
-            max-width: 33%; /* 전체 박스의 3분의 1로 설정 */
         }
     </style>
 </head>
