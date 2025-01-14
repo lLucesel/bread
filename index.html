@@ -36,18 +36,15 @@
         }
         .control-item {
             flex: 1;
-            display: block; /* 기존의 flex를 block으로 변경 */
-        }
-        .control-item label {
-            text-align: left; /* 레이블 왼쪽 정렬 */
-            margin-bottom: 8px; /* 입력 필드와 간격 추가 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .control-item input {
-            width: 100%; /* 입력 필드가 부모 컨테이너의 너비를 차지하게 */
+            width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            box-sizing: border-box; /* padding을 포함한 전체 크기 계산 */
         }
         .control-space {
             width: 20px; /* 빈 공간 추가 */
