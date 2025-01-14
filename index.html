@@ -19,7 +19,7 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            max-width: 80%;
+            max-width: 800px;
             padding: 20px;
             background-color: white;
             border-radius: 10px;
@@ -32,8 +32,7 @@
             display: flex;
             justify-content: space-between;
             gap: 10px;
-            margin-bottom: 10px;
-            width: 100%;
+            margin-bottom: 20px;
         }
         .control-item {
             flex: 1;
@@ -41,12 +40,11 @@
         .button-wrapper {
             display: flex;
             justify-content: center;
-            width: 100%;
+            margin-bottom: 20px;
         }
         input {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
@@ -58,7 +56,7 @@
             border-radius: 5px;
             cursor: pointer;
             width: 100%;
-            max-width: 100%;
+            max-width: 200px;
         }
         button:hover {
             background-color: #0056b3;
@@ -66,25 +64,22 @@
         .results {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
-            width: 100%;
+            gap: 10px;
         }
         .result-column {
             flex-grow: 1;
             min-width: 30%;
             padding: 10px;
             border: 1px solid #ccc;
-            margin: 0 5px;
             border-radius: 5px;
             height: 300px;
             overflow-y: auto;
             background-color: #fafafa;
-            max-width: 33%;
         }
         .result-header {
             font-weight: bold;
-            margin-bottom: 10px;
             text-align: center;
+            margin-bottom: 10px;
         }
         ul {
             list-style: none;
@@ -97,7 +92,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- 숫자 나열 -->
         <div class="numbers">
             <h2>사용할 숫자들:</h2>
             <p>55, 52, 49, 45, 44, 41, 39, 38, 37, 36, 35, 34, 33, 31, 29, 28, 27, 26, 24, 22, 21, 20, 19, 18, 17</p>
@@ -113,28 +107,23 @@
                 <input type="text" id="included" placeholder="예: 49, 45">
             </div>
         </div>
+        
         <div class="button-wrapper">
             <button onclick="findCombinations()">조합 찾기</button>
         </div>
 
         <div class="results">
-            <div>
+            <div class="result-column">
                 <div class="result-header">조합 크기: 3</div>
-                <div id="results-3" class="result-column">
-                    <ul></ul>
-                </div>
+                <ul id="results-3"></ul>
             </div>
-            <div>
+            <div class="result-column">
                 <div class="result-header">조합 크기: 4</div>
-                <div id="results-4" class="result-column">
-                    <ul></ul>
-                </div>
+                <ul id="results-4"></ul>
             </div>
-            <div>
+            <div class="result-column">
                 <div class="result-header">조합 크기: 5</div>
-                <div id="results-5" class="result-column">
-                    <ul></ul>
-                </div>
+                <ul id="results-5"></ul>
             </div>
         </div>
     </div>
@@ -144,71 +133,43 @@
 
         function findCombinations() {
             const excludedInput = document.getElementById("excluded").value;
-            const excluded = excludedInput
-                ? excludedInput.split(",").map(num => parseInt(num.trim(), 10))
-                : [];
-            
             const includedInput = document.getElementById("included").value;
-            const included = includedInput
-                ? includedInput.split(",").map(num => parseInt(num.trim(), 10))
-                : [];
+
+            const excluded = excludedInput ? excludedInput.split(",").map(num => parseInt(num.trim())) : [];
+            const included = includedInput ? includedInput.split(",").map(num => parseInt(num.trim())) : [];
 
             const filteredNumbers = numbers.filter(num => !excluded.includes(num));
-            const minSum = 130;
-            const maxSum = 136;
 
-            Promise.all(
-                [3, 4, 5].map(size => 
-                    new Promise(resolve => {
-                        const combos = getCombinations(filteredNumbers, size, included);
-                        const validCombos = combos.filter(combo => {
-                            const sum = combo.reduce((a, b) => a + b, 0);
-                            return sum >= minSum && sum <= maxSum;
-                        });
-                        resolve({ size, validCombos });
-                    })
-                )
-            ).then(allResults => {
-                allResults.forEach(({ size, validCombos }) => {
-                    displayResults(size, validCombos);
-                });
+            [3, 4, 5].forEach(size => {
+                const combinations = getCombinations(filteredNumbers, size, included);
+                displayResults(size, combinations);
             });
         }
 
         function getCombinations(array, size, included) {
             const results = [];
-            const remainingArray = array.filter(num => !included.includes(num));
-            
-            function helper(start, combo) {
+
+            function backtrack(start, combo) {
                 if (combo.length === size) {
                     if (included.every(num => combo.includes(num))) {
                         results.push([...combo]);
                     }
                     return;
                 }
-                for (let i = start; i < remainingArray.length; i++) {
-                    combo.push(remainingArray[i]);
-                    helper(i + 1, combo);
+                for (let i = start; i < array.length; i++) {
+                    combo.push(array[i]);
+                    backtrack(i + 1, combo);
                     combo.pop();
                 }
             }
 
-            if (included.length > 0) {
-                helper(0, [...included]);
-            } else {
-                helper(0, []); 
-            }
-
+            backtrack(0, [...included]);
             return results;
         }
 
         function displayResults(size, results) {
-            const resultsDiv = document.getElementById(`results-${size}`);
-            const ul = resultsDiv.querySelector("ul");
-
-            const limitedResults = results.slice(0, 100);
-
-            ul.innerHTML = limitedResults.map(result => `<li>${result.join(", ")}</li>`).join("");
+            const ul = document.getElementById(`results-${size}`);
+            ul.innerHTML = results.slice(0, 100).map(combo => `<li>${combo.join(", ")}</li>`).join("");
         }
     </script>
 </body>
