@@ -121,7 +121,7 @@
                 ? includedInput.split(",").map(num => parseInt(num.trim(), 10))
                 : [];
 
-            const filteredNumbers = numbers.filter(num => !excluded.includes(num) && !included.includes(num));
+            const filteredNumbers = numbers.filter(num => !excluded.includes(num));
             const minSum = 130;
             const maxSum = 136;
 
@@ -145,8 +145,15 @@
 
         function getCombinations(array, size, included) {
             const results = [];
+
+            // 포함할 숫자가 있다면, 먼저 해당 숫자들을 조합에 포함시킴
+            if (included.length > 0) {
+                array = array.filter(num => !included.includes(num)); // 포함할 숫자들은 제외
+            }
+
             function helper(start, combo) {
                 if (combo.length === size) {
+                    // 포함할 숫자가 모두 조합에 포함되었는지 확인
                     if (included.every(num => combo.includes(num))) {
                         results.push([...combo]);
                     }
@@ -158,7 +165,18 @@
                     combo.pop();
                 }
             }
-            helper(0, []);
+
+            // 포함할 숫자를 이미 포함한 상태에서 나머지 숫자들로 조합 생성
+            if (included.length > 0) {
+                included.forEach(num => {
+                    const tempArray = [...array];
+                    const tempIncluded = [num];
+                    helper(0, tempIncluded);
+                });
+            } else {
+                helper(0, []);
+            }
+
             return results;
         }
 
