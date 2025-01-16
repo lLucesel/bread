@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10,000원 묶음빵 만들기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .numbers {
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .control-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .control-item input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .control-space {
+            width: 20px; /* 빈 공간 추가 */
+        }
+        .button-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 200px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .result-column {
+            flex-grow: 1;
+            min-width: 30%;
+            max-width: 33%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #fafafa;
+        }
+        .result-header {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="numbers">
+            <h2>10,000원빵 사용방법</h2>
+            <p style="font-size: 13px;">왼쪽엔 다 팔린 빵들의 가격을, 오른쪽엔 넣고자 하는 빵들의 가격을 입력해주세요.</p>
+            <p style="font-size: 13px;">계산의 편의성을 위해 백단위를 제거하였습니다.</p>
+            <p style="font-size: 13px;">정확성을 높이기 위해선 여러개의 가격을 넣어주세요.</p>
+            <p style="font-size: 13px;">최대 100개까지만 나오기에 모든 묶음빵의 조합이 나오지는 않습니다.</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-item">
+                <label for="excluded">다 팔린 빵의 가격</label>
+                <input type="text" id="excluded" placeholder="ex) 55, 41">
+            </div>
+            <div class="control-space"></div> <!-- 빈 공간 추가 -->
+            <div class="control-item">
+                <label for="included">넣고자 하는 빵들의 가격</label>
+                <input type="text" id="included" placeholder="ex) 49, 45">
+            </div>
+        </div>
+        
+        <div class="button-wrapper">
+            <button onclick="findCombinations()">묶음빵 조합 찾기</button>
+        </div>
+
+        <div class="results">
+            <div class="result-column">
+                <div class="result-header">빵을 3개 넣을 경우</div>
+                <ul id="results-3"></ul>
+            </div>
+            <div class="result-column">
+                <div class="result-header">빵을 4개 넣을 경우</div>
+                <ul id="results-4"></ul>
+            </div>
+            <div class="result-column">
+                <div class="result-header">빵을 5개 넣을 경우</div>
+                <ul id="results-5"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const numbers = [55, 52, 49, 46, 45, 44, 41, 39, 38, 37, 36, 35, 34, 33, 31, 29, 28, 27, 26, 24, 22, 21, 20, 19, 18, 17];
+
+        function findCombinations() {
+            const excludedInput = document.getElementById("excluded").value;
+            const includedInput = document.getElementById("included").value;
+
+            const excluded = excludedInput ? excludedInput.split(",").map(num => parseInt(num.trim())) : [];
+            const included = includedInput ? includedInput.split(",").map(num => parseInt(num.trim())) : [];
+
+            // 제외할 숫자들을 필터링
+            const filteredNumbers = numbers.filter(num => !excluded.includes(num));
+
+            // 크기 3, 4, 5 조합 찾기
+            [3, 4, 5].forEach(size => {
+                const combinations = getCombinations(filteredNumbers, size, included);
+                displayResults(size, combinations);
+            });
+        }
+
+        function getCombinations(array, size, included) {
+            const results = [];
+            const minSum = 130;  // 최소 합
+            const maxSum = 136;  // 최대 합
+
+            function backtrack(start, combo) {
+                // 반드시 포함할 숫자들을 먼저 넣기
+                if (combo.length === size) {
+                    // 합이 범위 내에 있는지 확인
+                    const sum = combo.reduce((acc, num) => acc + num, 0);
+                    if (included.every(num => combo.includes(num)) && sum >= minSum && sum <= maxSum) {
+                        results.push([...combo]);
+                    }
+                    return;
+                }
+                // 시작 숫자부터 차례대로 조합을 만들기
+                for (let i = start; i < array.length; i++) {
+                    combo.push(array[i]);
+                    backtrack(i + 1, combo);
+                    combo.pop();
+                }
+            }
+
+            // 반드시 포함할 숫자들을 시작 부분에 넣고, 나머지 숫자들을 추가
+            backtrack(0, [...included]);
+
+            return results;
+        }
+
+        function displayResults(size, results) {
+            const ul = document.getElementById(`results-${size}`);
+            ul.innerHTML = results.slice(0, 100).map(combo => `<li>${combo.join(", ")}</li>`).join("");
+        }
+    </script>
+</body>
+</html>
