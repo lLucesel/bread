@@ -69,21 +69,24 @@
         }
         .results {
     display: flex;
-    flex-wrap: wrap; /* 항목들이 많으면 자동으로 줄바꿈 */
-    gap: 20px; /* 각 결과 박스 간의 간격 */
-    justify-content: space-between; /* 각 항목을 균등하게 배치 */
+    flex-wrap: wrap; /* 항목이 많으면 자동으로 줄바꿈 */
+    gap: 20px; /* 각 결과 박스 간격 */
+    justify-content: space-between; /* 항목 간격 균등 분배 */
+    width: 100%; /* 부모 박스 안에 맞추기 */
+    box-sizing: border-box; /* 패딩 포함 크기 계산 */
 }
 
 .result-column {
-    flex-basis: calc(25% - 20px); /* 기본적으로 4등분 */
+    flex-basis: calc(33.333% - 20px); /* 3등분 */
     min-width: 250px; /* 최소 너비 설정 (반응형 디자인) */
-    max-width: 25%; /* 4등분으로 제한 */
+    max-width: 33.333%; /* 3등분으로 제한 */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     height: 300px;
     overflow-y: auto;
     background-color: #fafafa;
+    box-sizing: border-box; /* 패딩 포함 크기 계산 */
 }
 
 .result-header {
@@ -104,18 +107,17 @@ li {
 /* 모바일 화면에서의 반응형 */
 @media (max-width: 768px) {
     .result-column {
-        flex-basis: calc(50% - 20px); /* 2등분으로 변경 */
+        flex-basis: calc(50% - 20px); /* 2등분 */
         max-width: 50%;
     }
 }
 
 @media (max-width: 480px) {
     .result-column {
-        flex-basis: 100%; /* 1등분으로 변경 */
+        flex-basis: 100%; /* 1등분 */
         max-width: 100%;
     }
 }
-
     </style>
 </head>
 <body>
