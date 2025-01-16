@@ -68,42 +68,33 @@
             background-color: #0056b3;
         }
         .results {
-    display: flex; /* 항목들을 수평으로 나열 */
-    gap: 20px; /* 각 결과 박스 간의 간격 */
-    justify-content: space-between; /* 각 항목을 균등하게 배치 */
-    width: 100%; /* 최상위 박스가 화면 크기에 맞게 확장되도록 */
-    box-sizing: border-box; /* padding, border 포함해서 계산되도록 */
-    overflow-x: auto; /* 수평 스크롤을 허용하여 넘칠 경우 스크롤바 표시 */
-}
-
-.result-column {
-    flex: 1 1 25%; /* 기본적으로 4등분으로 크기 조정, 최소 크기 25% */
-    min-width: 250px; /* 최소 너비 설정 (너무 좁아지지 않도록) */
-    max-width: 25%; /* 4등분으로 제한 */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 300px;
-    overflow-y: auto;
-    background-color: #fafafa;
-    box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
-}
-
-.result-header {
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-li {
-    margin-bottom: 5px;
-}
-
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .result-column {
+            flex-grow: 1;
+            min-width: 30%;
+            max-width: 33%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #fafafa;
+        }
+        .result-header {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
 /* 모바일 화면에서의 반응형 */
 @media (max-width: 768px) {
     .result-column {
@@ -111,7 +102,6 @@ li {
         max-width: 50%;
     }
 }
-
 @media (max-width: 480px) {
     .result-column {
         flex-basis: 100%; /* 1등분으로 변경 */
