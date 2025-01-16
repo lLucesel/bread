@@ -68,15 +68,17 @@
             background-color: #0056b3;
         }
         .results {
-    display: flex;
-    flex-wrap: wrap; /* 항목들이 많으면 자동으로 줄바꿈 */
-    gap: 20px; /* 각 결과 박스 간의 간격 */
+    display: flex; /* 항목들을 수평으로 나열 */
+    gap: 20px; /* 항목 간의 간격 */
     justify-content: space-between; /* 각 항목을 균등하게 배치 */
+    flex-wrap: nowrap; /* 항목들이 넘치지 않도록 한 줄에 표시 */
+    width: 100%; /* 최상위 박스가 화면 크기에 맞게 확장되도록 */
 }
 
 .result-column {
-    flex-basis: calc(25% - 20px); /* 기본적으로 4등분 */
-    min-width: 250px; /* 최소 너비 설정 (반응형 디자인) */
+    flex-grow: 1; /* 각 항목이 남은 공간을 차지하도록 설정 */
+    flex-basis: 25%; /* 각 항목의 기본 크기 설정 */
+    min-width: 250px; /* 최소 너비 설정 (너무 좁아지지 않도록) */
     max-width: 25%; /* 4등분으로 제한 */
     padding: 10px;
     border: 1px solid #ccc;
@@ -115,7 +117,6 @@ li {
         max-width: 100%;
     }
 }
-
     </style>
 </head>
 <body>
