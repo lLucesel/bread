@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>숫자 조합 결과</title>
+    <title>10,000원 묶음빵 만들기</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -100,44 +100,47 @@
 <body>
     <div class="container">
         <div class="numbers">
-            <h2>사용할 숫자들:</h2>
-            <p>55, 52, 49, 45, 44, 41, 39, 38, 37, 36, 35, 34, 33, 31, 29, 28, 27, 26, 24, 22, 21, 20, 19, 18, 17</p>
+            <h2>사용방법</h2>
+            <p>왼쪽엔 다 팔린 빵들의 가격을, 오른쪽엔 넣고자 하는 빵들의 가격을 입력해주세요.</p>
+            <p>계산의 편의성을 위해 백단위를 제거하였습니다.</p>
+            <p>정확성을 높이기 위해선 여러개의 가격을 넣어주세요.</p>
+            <p>최대 100개까지만 나오기에 모든 묶음빵의 조합이 나오지는 않습니다.</p>
         </div>
 
         <div class="controls">
             <div class="control-item">
-                <label for="excluded">제외할 숫자 (쉼표로 구분):</label>
-                <input type="text" id="excluded" placeholder="예: 55, 41">
+                <label for="excluded">다 팔린 빵의 가격</label>
+                <input type="text" id="excluded" placeholder="ex) 55, 41">
             </div>
             <div class="control-space"></div> <!-- 빈 공간 추가 -->
             <div class="control-item">
-                <label for="included">반드시 포함할 숫자 (쉼표로 구분):</label>
-                <input type="text" id="included" placeholder="예: 49, 45">
+                <label for="included">넣고자 하는 빵들의 가격</label>
+                <input type="text" id="included" placeholder="ex) 49, 45">
             </div>
         </div>
         
         <div class="button-wrapper">
-            <button onclick="findCombinations()">조합 찾기</button>
+            <button onclick="findCombinations()">묶음빵 조합 찾기</button>
         </div>
 
         <div class="results">
             <div class="result-column">
-                <div class="result-header">조합 크기: 3</div>
+                <div class="result-header">빵을 3개 넣을 경우</div>
                 <ul id="results-3"></ul>
             </div>
             <div class="result-column">
-                <div class="result-header">조합 크기: 4</div>
+                <div class="result-header">빵을 4개 넣을 경우</div>
                 <ul id="results-4"></ul>
             </div>
             <div class="result-column">
-                <div class="result-header">조합 크기: 5</div>
+                <div class="result-header">빵을 5개 넣을 경우</div>
                 <ul id="results-5"></ul>
             </div>
         </div>
     </div>
 
     <script>
-        const numbers = [55, 52, 49, 45, 44, 41, 39, 38, 37, 36, 35, 34, 33, 31, 29, 28, 27, 26, 24, 22, 21, 20, 19, 18, 17];
+        const numbers = [55, 52, 49, 46, 45, 44, 41, 39, 38, 37, 36, 35, 34, 33, 31, 29, 28, 27, 26, 24, 22, 21, 20, 19, 18, 17];
 
         function findCombinations() {
             const excludedInput = document.getElementById("excluded").value;
