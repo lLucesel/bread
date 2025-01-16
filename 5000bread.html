@@ -75,7 +75,7 @@
 }
 
 .result-column {
-    flex-basis: calc(25% - 20px); /* 각 항목을 4등분 */
+    flex-basis: calc(25% - 20px); /* 기본적으로 4등분 */
     min-width: 250px; /* 최소 너비 설정 (반응형 디자인) */
     max-width: 25%; /* 4등분으로 제한 */
     padding: 10px;
@@ -100,6 +100,22 @@ ul {
 li {
     margin-bottom: 5px;
 }
+
+/* 모바일 화면에서의 반응형 */
+@media (max-width: 768px) {
+    .result-column {
+        flex-basis: calc(50% - 20px); /* 2등분으로 변경 */
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 480px) {
+    .result-column {
+        flex-basis: 100%; /* 1등분으로 변경 */
+        max-width: 100%;
+    }
+}
+
     </style>
 </head>
 <body>
