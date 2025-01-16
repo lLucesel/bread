@@ -68,33 +68,39 @@
             background-color: #0056b3;
         }
         .results {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        .result-column {
-            flex-grow: 1;
-            min-width: 30%;
-            max-width: 33%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            height: 300px;
-            overflow-y: auto;
-            background-color: #fafafa;
-        }
-        .result-header {
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            margin-bottom: 5px;
-        }
+    display: flex;
+    flex-wrap: wrap; /* 항목들이 많으면 자동으로 줄바꿈 */
+    gap: 20px; /* 각 결과 박스 간의 간격 */
+    justify-content: space-between; /* 각 항목을 균등하게 배치 */
+}
+
+.result-column {
+    flex-basis: calc(25% - 20px); /* 기본적으로 4등분 */
+    min-width: 250px; /* 최소 너비 설정 (반응형 디자인) */
+    max-width: 25%; /* 4등분으로 제한 */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 300px;
+    overflow-y: auto;
+    background-color: #fafafa;
+}
+
+.result-header {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
 /* 모바일 화면에서의 반응형 */
 @media (max-width: 768px) {
     .result-column {
@@ -102,12 +108,14 @@
         max-width: 50%;
     }
 }
+
 @media (max-width: 480px) {
     .result-column {
         flex-basis: 100%; /* 1등분으로 변경 */
         max-width: 100%;
     }
 }
+
     </style>
 </head>
 <body>
