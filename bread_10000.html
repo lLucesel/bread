@@ -30,24 +30,18 @@
         }
         .controls {
             display: flex;
-            justify-content: space-between;
-            gap: 20px;
+            flex-direction: column;
+            gap: 10px;
             margin-bottom: 20px;
         }
         .control-item {
-            flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
         }
         .control-item input {
-            width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-        }
-        .control-space {
-            width: 20px; /* 빈 공간 추가 */
         }
         .button-wrapper {
             display: flex;
@@ -68,79 +62,76 @@
             background-color: #0056b3;
         }
         .results {
-    display: flex;
-    flex-wrap: wrap; /* 항목이 많으면 자동으로 줄바꿈 */
-    gap: 20px; /* 각 결과 박스 간격 */
-    justify-content: space-between; /* 항목 간격 균등 분배 */
-    width: 100%; /* 부모 박스 안에 맞추기 */
-    box-sizing: border-box; /* 패딩 포함 크기 계산 */
-}
-
-.result-column {
-    flex-basis: calc(33.333% - 20px); /* 3등분 */
-    min-width: 250px; /* 최소 너비 설정 (반응형 디자인) */
-    max-width: 33.333%; /* 3등분으로 제한 */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 300px;
-    overflow-y: auto;
-    background-color: #fafafa;
-    box-sizing: border-box; /* 패딩 포함 크기 계산 */
-}
-
-.result-header {
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-li {
-    margin-bottom: 5px;
-}
-
-/* 모바일 화면에서의 반응형 */
-@media (max-width: 768px) {
-    .result-column {
-        flex-basis: calc(50% - 20px); /* 2등분 */
-        max-width: 50%;
-    }
-}
-
-@media (max-width: 480px) {
-    .result-column {
-        flex-basis: 100%; /* 1등분 */
-        max-width: 100%;
-    }
-}
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .result-column {
+            flex-basis: calc(33.333% - 20px);
+            min-width: 250px;
+            max-width: 33.333%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #fafafa;
+            box-sizing: border-box;
+        }
+        .result-header {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        @media (max-width: 768px) {
+            .result-column {
+                flex-basis: calc(50% - 20px);
+                max-width: 50%;
+            }
+        }
+        @media (max-width: 480px) {
+            .result-column {
+                flex-basis: 100%;
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="numbers">
             <h2>10,000원빵 사용방법</h2>
-            <ui>
-                <li style="font-size: 13px;">왼쪽엔 다 팔린 빵들의 가격을, 오른쪽엔 넣고자 하는 빵들의 가격을 입력해주세요.</li>
-                <li style="font-size: 13px;">계산의 편의성을 위해 백단위를 제거하였습니다.</li>
-                <li style="font-size: 13px;">정확성을 높이기 위해선 여러개의 가격을 넣어주세요.</li>
-                <li style="font-size: 13px;">최대 100개까지만 나오기에 모든 묶음빵의 조합이 나오지는 않습니다.</li>
-            </ui>
+            <ul>
+                <li style="font-size: 13px;">가장 먼저 기본이 되는 빵들의 가격을 입력하세요.</li>
+                <li style="font-size: 13px;">다 팔린 빵의 가격은 제외됩니다.</li>
+                <li style="font-size: 13px;">넣고자 하는 빵들의 가격은 조합에 반드시 포함됩니다.</li>
+                <li style="font-size: 13px;">가격은 쉼표로 구분하며, 백단위 생략 형식입니다.</li>
+                <li style="font-size: 13px;">최대 100개의 조합까지만 표시됩니다.</li>
+            </ul>
         </div>
 
         <div class="controls">
             <div class="control-item">
-                <label for="excluded">다 팔린 빵의 가격</label>
-                <input type="text" id="excluded" placeholder="ex) 55, 41">
+                <label for="base">기본 빵 가격 목록</label>
+                <input type="text" id="base" placeholder="예: 18, 22, 25, 35, 45">
             </div>
-            <div class="control-space"></div> <!-- 빈 공간 추가 -->
+            <div class="control-item">
+                <label for="excluded">다 팔린 빵의 가격</label>
+                <input type="text" id="excluded" placeholder="예: 55, 41">
+            </div>
             <div class="control-item">
                 <label for="included">넣고자 하는 빵들의 가격</label>
-                <input type="text" id="included" placeholder="ex) 49, 45">
+                <input type="text" id="included" placeholder="예: 49, 45">
             </div>
         </div>
         
@@ -165,19 +156,17 @@ li {
     </div>
 
     <script>
-        const numbers = [18,19,19.5,21,22,25,27,28,29,31,32,33,35,36,37,38,39,41,42,45,46,47,49,52,53,55];
-
         function findCombinations() {
+            const baseInput = document.getElementById("base").value;
             const excludedInput = document.getElementById("excluded").value;
             const includedInput = document.getElementById("included").value;
 
-            const excluded = excludedInput ? excludedInput.split(",").map(num => parseInt(num.trim())) : [];
-            const included = includedInput ? includedInput.split(",").map(num => parseInt(num.trim())) : [];
+            const base = baseInput ? baseInput.split(",").map(num => parseFloat(num.trim())) : [];
+            const excluded = excludedInput ? excludedInput.split(",").map(num => parseFloat(num.trim())) : [];
+            const included = includedInput ? includedInput.split(",").map(num => parseFloat(num.trim())) : [];
 
-            // 제외할 숫자들을 필터링
-            const filteredNumbers = numbers.filter(num => !excluded.includes(num));
+            const filteredNumbers = base.filter(num => !excluded.includes(num));
 
-            // 크기 3, 4, 5 조합 찾기
             [3, 4, 5].forEach(size => {
                 const combinations = getCombinations(filteredNumbers, size, included);
                 displayResults(size, combinations);
@@ -186,20 +175,17 @@ li {
 
         function getCombinations(array, size, included) {
             const results = [];
-            const minSum = 130;  // 최소 합
-            const maxSum = 136;  // 최대 합
+            const minSum = 130;
+            const maxSum = 136;
 
             function backtrack(start, combo) {
-                // 반드시 포함할 숫자들을 먼저 넣기
                 if (combo.length === size) {
-                    // 합이 범위 내에 있는지 확인
                     const sum = combo.reduce((acc, num) => acc + num, 0);
                     if (included.every(num => combo.includes(num)) && sum >= minSum && sum <= maxSum) {
                         results.push([...combo]);
                     }
                     return;
                 }
-                // 시작 숫자부터 차례대로 조합을 만들기
                 for (let i = start; i < array.length; i++) {
                     combo.push(array[i]);
                     backtrack(i + 1, combo);
@@ -207,9 +193,7 @@ li {
                 }
             }
 
-            // 반드시 포함할 숫자들을 시작 부분에 넣고, 나머지 숫자들을 추가
             backtrack(0, [...included]);
-
             return results;
         }
 
