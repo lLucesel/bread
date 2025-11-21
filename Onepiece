@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+
+
+
+<html lang="ko">
+
+
+
+<head>
+
+
+
+  <meta charset="UTF-8">
+
+
+
+  <title>히마리식 수화요란 털기 (원본:히마리식 샬레 털기)</title>
+
+
+
+</head>
+
+
+
+<body>
+
+
+
+<h1>히마리식 수화요란 털기 (원본:히마리식 샬레 털기)</h1>
+
+
+
+<form id="inputForm">
+
+
+
+  <h2>회차 선택</h2>
+
+
+
+  <label for="caseSelect">회차 선택:</label>
+
+
+
+  <select id="caseSelect">
+
+
+
+    <option value="case1">1, 4 회차</option>
+
+
+
+    <option value="case2">2, 5 회차</option>
+
+
+
+    <option value="case3">3, 6 회차</option>
+
+
+
+    <option value="case4">7 회차 이상</option>
+
+
+
+  </select>
+
+
+
+  <div id="objectInfo"></div> <!-- 물건의 크기와 개수를 표시하는 영역 -->
+
+
+
+  <h2>이미 찾은 물건 개수 입력</h2>
+
+
+
+  <div id="foundObjects"></div> <!-- 이미 찾은 물건 개수 입력 영역 -->
+
+
+
+  <h2>열린 칸 선택</h2>
+
+
+
+  <div id="grid"></div>
+
+
+
+  <br>
+
+
+
+</form>
+
+
+
+<h2>결과:</h2>
+
+
+
+<div id="result"></div>
+
+
+
+
+
+
+
+<script>
+
+
+
+  function calculateProbabilities(objects, o) {
+
+
+
+    const gridWidth = 9;
+
+
+
+    const gridHeight = 5;
+
+
+
+
+
+
+
+    // 확률 그리드를 0으로 초기화
+
+
+
+    let probabilities = Array.from({ length: gridHeight }, () => Array(gridWidth).fill(0.0));
+
+
+
+
+
+
+
+    // 열린 칸 좌표를 빠른 조회를 위해 Set으로 변환
+
+
+
+    let openedCells = new Set(o.map(([x, y]) => `${y},${x}`));
+
+
+
+
+
+
+
+    // 가능한 방향을 가져오는 함수
+
+
+
+    function getOrientations(w, h) {
+
+
+
+      if (w === h) {
+
+
+
+        return [{ w, h }];
+
+
+
+      } else {
+
+
+
+        return [{ w, h }, { w: h, h: w }];
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    // 각 물건 타입에 대해 계산
+
+
+
+    for (let obj of objects) {
+
+
+
+      const { w: w0, h: h0, count } = obj;
+
+
+
+
+
+
+
+      // 남은 물건 개수가 0 이하이면 계산하지 않음
+
+
+
+      if (count <= 0) continue;
+
+
+
+
+
+
+
+      const orientations = getOrientations(w0, h0);
+
+
+
+      let placements = [];
+
+
+
+      let totalPlacements = 0;
+
+
+
+
+
+
+
+      // 모든 가능한 배치를 생성
+
+
+
+      for (let { w, h } of orientations) {
+
+
+
+        const maxX = gridWidth - w + 1;
+
+
+
+        const maxY = gridHeight - h + 1;
+
+
+
+        for (let y = 0; y < maxY; y++) {
+
+
+
+          for (let x = 0; x < maxX; x++) {
+
+
+
+            // 열린 칸과 겹치는지 확인
+
+
+
+            let overlapsOpenedEmpty = false;
+
+
+
+            outerLoop:
+
+
+
+              for (let dy = 0; dy < h; dy++) {
+
+
+
+                for (let dx = 0; dx < w; dx++) {
+
+
+
+                  const cellY = y + dy;
+
+
+
+                  const cellX = x + dx;
+
+
+
+                  if (openedCells.has(`${cellY},${cellX}`)) {
+
+
+
+                    overlapsOpenedEmpty = true;
+
+
+
+                    break outerLoop;
+
+
+
+                  }
+
+
+
+                }
+
+
+
+              }
+
+
+
+            if (!overlapsOpenedEmpty) {
+
+
+
+              placements.push({
+
+
+
+                cells: [].concat(
+
+
+
+                  ...Array.from({ length: h }, (_, dy) =>
+
+
+
+                    Array.from({ length: w }, (_, dx) => [y + dy, x + dx])
+
+
+
+                  )
+
+
+
+                ),
+
+
+
+              });
+
+
+
+              totalPlacements += 1;
+
+
+
+            }
+
+
+
+          }
+
+
+
+        }
+
+
+
+      }
+
+
+
+
+
+
+
+      // 각 셀이 얼마나 많이 커버되는지 계산
+
+
+
+      let cellCounts = {};
+
+
+
+      for (let placement of placements) {
+
+
+
+        for (let [cellY, cellX] of placement.cells) {
+
+
+
+          const key = `${cellY},${cellX}`;
+
+
+
+          cellCounts[key] = (cellCounts[key] || 0) + 1;
+
+
+
+        }
+
+
+
+      }
+
+
+
+
+
+
+
+      // 각 셀에 대한 f_k(cell) 계산
+
+
+
+      let f_k = {};
+
+
+
+      for (let key in cellCounts) {
+
+
+
+        f_k[key] = cellCounts[key] / totalPlacements;
+
+
+
+      }
+
+
+
+
+
+
+
+      // 각 셀에 대한 P_k(cell covered) 계산
+
+
+
+      for (let key in f_k) {
+
+
+
+        const [cellY, cellX] = key.split(',').map(Number);
+
+
+
+        const f = f_k[key];
+
+
+
+        const P_k = 1 - Math.pow(1 - f, count);
+
+
+
+        probabilities[cellY][cellX] = 1 - (1 - probabilities[cellY][cellX]) * (1 - P_k);
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    // 열린 칸의 확률은 0으로 설정
+
+
+
+    for (let cell of openedCells) {
+
+
+
+      const [cellY, cellX] = cell.split(',').map(Number);
+
+
+
+      probabilities[cellY][cellX] = 0.0;
+
+
+
+    }
+
+
+
+
+
+
+
+    return probabilities;
+
+
+
+  }
+
+
+
+
+
+
+
+  // 격자 생성 및 클릭 이벤트 처리
+
+
+
+  const gridDiv = document.getElementById('grid');
+
+
+
+  const gridWidth = 9;
+
+
+
+  const gridHeight = 5;
+
+
+
+  let openedCellsArray = []; // 열린 칸 좌표 저장
+
+
+
+
+
+
+
+  for (let y = 0; y < gridHeight; y++) {
+
+
+
+    for (let x = 0; x < gridWidth; x++) {
+
+
+
+      const cellDiv = document.createElement('div');
+
+
+
+      cellDiv.classList.add('grid-cell');
+
+
+
+      cellDiv.dataset.x = x;
+
+
+
+      cellDiv.dataset.y = y;
+
+
+
+      cellDiv.addEventListener('click', function () {
+
+
+
+        const x = parseInt(this.dataset.x);
+
+
+
+        const y = parseInt(this.dataset.y);
+
+
+
+        if (this.classList.toggle('opened-cell')) {
+
+
+
+          openedCellsArray.push([x, y]);
+
+
+
+        } else {
+
+
+
+          openedCellsArray = openedCellsArray.filter(
+
+
+
+            coord => !(coord[0] === x && coord[1] === y)
+
+
+
+          );
+
+
+
+        }
+
+
+
+        // 칸을 선택할 때마다 자동으로 계산 수행
+
+
+
+        calculateAndDisplayResult();
+
+
+
+      });
+
+
+
+      gridDiv.appendChild(cellDiv);
+
+
+
+    }
+
+
+
+  }
+
+
+
+
+
+
+
+  let currentObjects = []; // 현재 회차의 물건 목록 저장
+
+
+
+
+
+
+
+  // 회차 선택 시 자동으로 계산 수행
+
+
+
+  document.getElementById('caseSelect').addEventListener('change', function() {
+
+
+
+    // 열린 칸 초기화
+
+
+
+    openedCellsArray = [];
+
+
+
+    document.querySelectorAll('.grid-cell').forEach(cell => {
+
+
+
+      cell.classList.remove('opened-cell');
+
+
+
+    });
+
+
+
+    // 물건 목록 초기화
+
+
+
+    initializeObjects();
+
+
+
+    // 이미 찾은 물건 개수 입력 필드 재생성
+
+
+
+    generateFoundObjectsInputs();
+
+
+
+    calculateAndDisplayResult();
+
+
+
+  });
+
+
+
+
+
+
+
+  // 이미 찾은 물건 개수 입력 필드 생성 함수
+
+
+
+  function generateFoundObjectsInputs() {
+
+
+
+    const foundObjectsDiv = document.getElementById('foundObjects');
+
+
+
+    foundObjectsDiv.innerHTML = ''; // 기존 내용 삭제
+
+
+
+
+
+
+
+    currentObjects.forEach((obj, index) => {
+
+
+
+      const objDiv = document.createElement('div');
+
+
+
+      objDiv.classList.add('object-item');
+
+
+
+      objDiv.innerHTML = `물건 ${index + 1} (${obj.w}x${obj.h}, 총 ${obj.totalCount}개): 이미 찾은 개수 `;
+
+
+
+      const input = document.createElement('input');
+
+
+
+      input.type = 'number';
+
+
+
+      input.min = '0';
+
+
+
+      input.max = obj.totalCount;
+
+
+
+      input.value = '0';
+
+
+
+      input.classList.add('found-count-input');
+
+
+
+      input.dataset.index = index;
+
+
+
+      objDiv.appendChild(input);
+
+
+
+      foundObjectsDiv.appendChild(objDiv);
+
+
+
+    });
+
+
+
+
+
+
+
+    // 이미 찾은 물건 개수 변경 시 자동으로 계산 수행
+
+
+
+    addFoundCountListeners();
+
+
+
+  }
+
+
+
+
+
+
+
+  // 이미 찾은 물건 개수 변경 시 자동으로 계산 수행
+
+
+
+  function addFoundCountListeners() {
+
+
+
+    document.querySelectorAll('.found-count-input').forEach(input => {
+
+
+
+      input.addEventListener('input', function() {
+
+
+
+        calculateAndDisplayResult();
+
+
+
+      });
+
+
+
+    });
+
+
+
+  }
+
+
+
+
+
+
+
+  // 초기 설정
+
+
+
+  initializeObjects();
+
+
+
+  generateFoundObjectsInputs();
+
+
+
+  calculateAndDisplayResult();
+
+
+
+
+
+
+
+  // 물건 목록 초기화 함수
+
+
+
+  function initializeObjects() {
+
+
+
+    const caseSelect = document.getElementById('caseSelect').value;
+
+
+
+
+
+
+
+    if (caseSelect === 'case1') {
+
+
+
+      // 1, 4 회차
+
+
+
+      currentObjects = [
+
+
+
+        { w: 3, h: 2, count: 2, totalCount: 2 },
+
+
+
+        { w: 3, h: 1, count: 5, totalCount: 5 },
+
+
+
+        { w: 2, h: 1, count: 2, totalCount: 2 },
+
+
+
+      ];
+
+
+
+    } else if (caseSelect === 'case2') {
+
+
+
+      // 2, 5 회차
+
+
+
+      currentObjects = [
+
+
+
+        { w: 4, h: 2, count: 1, totalCount: 1 },
+
+
+
+        { w: 1, h: 4, count: 2, totalCount: 2 },
+
+
+
+        { w: 3, h: 1, count: 5, totalCount: 5 },
+
+
+
+      ];
+
+
+
+    } else if (caseSelect === 'case3') {
+
+
+
+      // 3, 6 회차
+
+
+
+      currentObjects = [
+
+
+
+        { w: 3, h: 3, count: 1, totalCount: 1 },
+
+
+
+        { w: 2, h: 2, count: 4, totalCount: 4 },
+
+
+
+        { w: 2, h: 1, count: 3, totalCount: 3 },
+
+
+
+      ];
+
+
+
+    } else if (caseSelect === 'case4') {
+
+
+
+      // 7 회차 이상
+
+
+
+      currentObjects = [
+
+
+
+        { w: 4, h: 2, count: 2, totalCount: 2 },
+
+
+
+        { w: 3, h: 1, count: 3, totalCount: 3 },
+
+
+
+        { w: 2, h: 1, count: 6, totalCount: 6 },
+
+
+
+      ];
+
+
+
+    }
+
+
+
+  }
+
+
+
+
+
+
+
+  // 결과 계산 및 표시 함수
+
+
+
+  function calculateAndDisplayResult() {
+
+
+
+    // 물건의 크기와 개수 표시
+
+
+
+    const objectInfoDiv = document.getElementById('objectInfo');
+
+
+
+    const objectInfoText = currentObjects.map((obj, index) => `물건 ${index + 1}: ${obj.w}x${obj.h} ${obj.totalCount}개`).join(', ');
+
+
+
+    objectInfoDiv.textContent = `물건 목록: ${objectInfoText}`;
+
+
+
+
+
+
+
+    // 이미 찾은 물건 개수 적용
+
+
+
+    document.querySelectorAll('.found-count-input').forEach(input => {
+
+
+
+      const index = input.dataset.index;
+
+
+
+      const foundCount = parseInt(input.value) || 0;
+
+
+
+      // 남은 물건 개수는 총 개수에서 이미 찾은 개수를 뺀 값
+
+
+
+      currentObjects[index].count = currentObjects[index].totalCount - foundCount;
+
+
+
+      if (currentObjects[index].count < 0) {
+
+
+
+        currentObjects[index].count = 0;
+
+
+
+      }
+
+
+
+    });
+
+
+
+
+
+
+
+    // 열린 칸 좌표는 openedCellsArray에서 가져옵니다.
+
+
+
+    const o = openedCellsArray;
+
+
+
+
+
+
+
+    // 확률 계산
+
+
+
+    const adjustedObjects = currentObjects.map(obj => ({ ...obj }));
+
+
+
+    const probabilities = calculateProbabilities(adjustedObjects, o);
+
+
+
+
+
+
+
+    // 결과 표시
+
+
+
+    const resultDiv = document.getElementById('result');
+
+
+
+    resultDiv.innerHTML = ''; // 기존 내용 삭제
+
+
+
+
+
+
+
+    // 확률이 높은 순서대로 정렬된 리스트 생성
+
+
+
+    let probabilityList = [];
+
+
+
+    for (let y = 0; y < probabilities.length; y++) {
+
+
+
+      for (let x = 0; x < probabilities[0].length; x++) {
+
+
+
+        const prob = probabilities[y][x];
+
+
+
+        if (!o.some(coord => coord[0] === x && coord[1] === y)) { // 열린 칸 제외
+
+
+
+          probabilityList.push({
+
+
+
+            x: x,
+
+
+
+            y: y,
+
+
+
+            prob: prob,
+
+
+
+          });
+
+
+
+        }
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    // 내림차순 정렬
+
+
+
+    probabilityList.sort((a, b) => b.prob - a.prob);
+
+
+
+
+
+
+
+    // 가장 높은 확률의 칸과 그 다음으로 높은 두 칸 선택
+
+
+
+    const highestProbCells = [];
+
+
+
+    const secondHighestProbCells = [];
+
+
+
+
+
+
+
+    if (probabilityList.length > 0) {
+
+
+
+      const maxProb = probabilityList[0].prob;
+
+
+
+      highestProbCells.push(probabilityList[0]);
+
+
+
+      let index = 1;
+
+
+
+      while (index < probabilityList.length && probabilityList[index].prob === maxProb) {
+
+
+
+        highestProbCells.push(probabilityList[index]);
+
+
+
+        index++;
+
+
+
+      }
+
+
+
+
+
+
+
+      let secondHighestProb = null;
+
+
+
+      if (index < probabilityList.length) {
+
+
+
+        secondHighestProb = probabilityList[index].prob;
+
+
+
+        secondHighestProbCells.push(probabilityList[index]);
+
+
+
+        index++;
+
+
+
+        while (index < probabilityList.length && probabilityList[index].prob === secondHighestProb && secondHighestProbCells.length < 2) {
+
+
+
+          secondHighestProbCells.push(probabilityList[index]);
+
+
+
+          index++;
+
+
+
+        }
+
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+    for (let y = 0; y < probabilities.length; y++) {
+
+
+
+      for (let x = 0; x < probabilities[0].length; x++) {
+
+
+
+        const cellDiv = document.createElement('div');
+
+
+
+        cellDiv.classList.add('grid-cell');
+
+
+
+        const prob = probabilities[y][x];
+
+
+
+        cellDiv.textContent = (prob * 100).toFixed(1) + '%';
+
+
+
+
+
+
+
+        // 이미 열린 칸 표시
+
+
+
+        if (o.some(coord => coord[0] === x && coord[1] === y)) {
+
+
+
+          cellDiv.classList.add('opened-cell');
+
+
+
+        }
+
+
+
+
+
+
+
+        // 확률이 가장 높은 칸 파란색으로 표시
+
+
+
+        if (highestProbCells.some(cell => cell.x === x && cell.y === y)) {
+
+
+
+          cellDiv.classList.add('highest-prob');
+
+
+
+        }
+
+
+
+        // 그 다음으로 높은 두 칸 빨간색으로 표시
+
+
+
+        else if (secondHighestProbCells.some(cell => cell.x === x && cell.y === y)) {
+
+
+
+          cellDiv.classList.add('second-highest-prob');
+
+
+
+        }
+
+
+
+
+
+
+
+        resultDiv.appendChild(cellDiv);
+
+
+
+      }
+
+
+
+    }
+
+
+
+  }
+
+
+
+</script>
+
+
+
+
+
+
+
+<style>
+
+
+
+      body {
+
+
+
+          font-family: Arial, sans-serif;
+
+
+
+          margin: 20px;
+
+
+
+      }
+
+
+
+
+
+
+
+      h1, h2 {
+
+
+
+          color: #333;
+
+
+
+      }
+
+
+
+
+
+
+
+      form {
+
+
+
+          margin-bottom: 20px;
+
+
+
+      }
+
+
+
+
+
+
+
+      label {
+
+
+
+          font-weight: bold;
+
+
+
+      }
+
+
+
+
+
+
+
+      #caseSelect {
+
+
+
+          margin-bottom: 10px;
+
+
+
+      }
+
+
+
+
+
+
+
+      #objectInfo {
+
+
+
+          margin-bottom: 20px;
+
+
+
+          font-size: 14px;
+
+
+
+      }
+
+
+
+
+
+
+
+      #grid, #result {
+
+
+
+          display: grid;
+
+
+
+          grid-template-columns: repeat(9, 40px);
+
+
+
+          grid-auto-rows: 40px;
+
+
+
+          gap: 2px;
+
+
+
+      }
+
+
+
+
+
+
+
+      .grid-cell {
+
+
+
+          width: 40px;
+
+
+
+          height: 40px;
+
+
+
+          background-color: #f0f0f0;
+
+
+
+          text-align: center;
+
+
+
+          line-height: 40px;
+
+
+
+          border: 1px solid #ccc;
+
+
+
+          font-size: 12px;
+
+
+
+          cursor: pointer;
+
+
+
+          position: relative;
+
+
+
+      }
+
+
+
+
+
+
+
+      .grid-cell:hover {
+
+
+
+          background-color: #e0e0e0;
+
+
+
+      }
+
+
+
+
+
+
+
+      .opened-cell {
+
+
+
+          background-color: #808080; /* 더 어두운 회색 */
+
+
+
+      }
+
+
+
+
+
+
+
+      #result .grid-cell {
+
+
+
+          cursor: default;
+
+
+
+      }
+
+
+
+
+
+
+
+      #result .opened-cell {
+
+
+
+          background-color: #606060;
+
+
+
+      }
+
+
+
+
+
+
+
+      .highest-prob {
+
+
+
+          background-color: #9999ff; /* 연한 파란색 */
+
+
+
+      }
+
+
+
+
+
+
+
+      .highest-prob::after {
+
+
+
+          content: '';
+
+
+
+          position: absolute;
+
+
+
+          top: 2px;
+
+
+
+          right: 2px;
+
+
+
+          width: 0;
+
+
+
+          height: 0;
+
+
+
+          border-top: 10px solid blue;
+
+
+
+          border-left: 10px solid transparent;
+
+
+
+      }
+
+
+
+
+
+
+
+      .second-highest-prob {
+
+
+
+          background-color: #ff9999; /* 연한 빨간색 */
+
+
+
+      }
+
+
+
+
+
+
+
+      .second-highest-prob::after {
+
+
+
+          content: '';
+
+
+
+          position: absolute;
+
+
+
+          top: 2px;
+
+
+
+          right: 2px;
+
+
+
+          width: 0;
+
+
+
+          height: 0;
+
+
+
+          border-top: 10px solid red;
+
+
+
+          border-left: 10px solid transparent;
+
+
+
+      }
+
+
+
+
+
+
+
+      .found-count-input {
+
+
+
+          width: 40px;
+
+
+
+          margin-left: 5px;
+
+
+
+      }
+
+
+
+
+
+
+
+      .object-item {
+
+
+
+          margin-bottom: 5px;
+
+
+
+      }
+
+
+
+  </style>
+
+
+
+
+
+
+
+</body>
+
+
+
+</html>
